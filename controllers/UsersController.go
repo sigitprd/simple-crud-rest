@@ -31,3 +31,19 @@ func StoreUser(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusCreated, result)
 }
+
+func UpdateUser(ctx echo.Context) error {
+	id := ctx.Param("id")
+	username := ctx.FormValue("username")
+	email := ctx.FormValue("email")
+	roles := ctx.FormValue("roles")
+
+	result, err := models.UpdateUser(id, username, email, roles)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	return ctx.JSON(http.StatusOK, result)
+}
