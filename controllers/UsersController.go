@@ -16,3 +16,18 @@ func FetchUser(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, result)
 }
+
+func StoreUser(ctx echo.Context) error {
+	username := ctx.FormValue("username")
+	email := ctx.FormValue("email")
+	roles := ctx.FormValue("roles")
+
+	result, err := models.StoreUser(username, email, roles)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	return ctx.JSON(http.StatusCreated, result)
+}

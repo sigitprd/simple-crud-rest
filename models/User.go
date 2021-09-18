@@ -73,3 +73,40 @@ func FetchUser(id string) (helpers.Response, error) {
 		return res, nil
 	}
 }
+
+func StoreUser(username, email, roles string) (helpers.Response, error) {
+	var res helpers.Response
+
+	//newRoles, err := strconv.Atoi(roles)
+	//if err != nil {
+	//	return res, err
+	//}
+
+	connection := database.CreateConnection()
+
+	sqlStatement := "INSERT users (username, email, roles) VALUES (?,?,?)"
+
+	stmt, err := connection.Prepare(sqlStatement)
+
+	if err != nil {
+		return res, err
+	}
+
+	result, err := stmt.Exec(username, email, roles)
+	if err != nil {
+		return res, err
+	}
+
+	lastInsertId, err := result.LastInsertId()
+	if err != nil {
+		return res, err
+	}
+
+	res.Status = http.StatusCreated
+	res.Message = "Success"
+	res.Data = map[string]int64{
+		"last_insert_id": lastInsertId,
+	}
+
+	return res, nil
+}
