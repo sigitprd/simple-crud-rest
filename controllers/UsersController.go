@@ -47,3 +47,16 @@ func UpdateUser(ctx echo.Context) error {
 
 	return ctx.JSON(http.StatusOK, result)
 }
+
+func DeleteUser(ctx echo.Context) error {
+	id := ctx.Param("id")
+
+	result, err := models.DeleteUser(id)
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, map[string]string{
+			"message": err.Error(),
+		})
+	}
+
+	return ctx.JSON(http.StatusOK, result)
+}
