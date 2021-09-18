@@ -110,3 +110,38 @@ func StoreUser(username, email, roles string) (helpers.Response, error) {
 
 	return res, nil
 }
+
+func UpdateUser(id, username, email, roles string) (helpers.Response, error) {
+	var res helpers.Response
+
+	if id != ""{
+		id = strings.Trim(id, "/")
+	}
+
+	connection := database.CreateConnection()
+
+	sqlStatement := "UPDATE users SET username = ?, email = ?, roles = ? WHERE id = ?"
+
+	stmt, err := connection.Prepare(sqlStatement)
+	if err != nil {
+		return res, err
+	}
+
+	result, err := stmt.Exec(username, email, roles, id)
+	if err != nil {
+		return res, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return res, err
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = map[string]int64{
+		"rows_affected": rowsAffected,
+	}
+
+	return res, nil
+}
